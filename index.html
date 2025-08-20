@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume & Cover Letter Generator</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f9c74f;
+            --danger: #f94144;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.95rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+            -webkit-appearance: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover, .btn-success:focus {
+            background: #3aa8d0;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-warning:hover, .btn-warning:focus {
+            background: #e6b741;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover, .btn-danger:focus {
+            background: #e03537;
+            transform: translateY(-2px);
+        }
+
+        .style-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .style-option {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .style-option:hover, .style-option:focus {
+            border-color: var(--primary);
+        }
+
+        .style-option.active {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .style-option i {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .style-option div {
+            font-size: 0.85rem;
+        }
+
+        .resume-output, .letter-output {
+            background: white;
+            min-height: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .output-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light);
+            gap: 10px;
+        }
+
+        .resume-content, .letter-content {
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .resume-section {
+            margin-bottom: 20px;
+        }
+
+        .resume-section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style-type: none;
+        }
+
+        .skill-item {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .toast {
+                left: auto;
+                right: 20px;
+                width: auto;
+            }
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: var(--dark);
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+
+        /* Resume Styles */
+        .resume.modern {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2d3748;
+        }
+
+        .resume.modern .resume-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .resume.modern .name {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .resume.modern .title {
+            font-size: 1.1rem;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+
+        .resume.classic {
+            font-family: 'Georgia', serif;
+            color: #2d3748;
+        }
+
+        .resume.classic .resume-header {
+            border-bottom: 2px solid #cbd5e0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .resume.classic .name {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .resume.creative {
+            font-family: 'Arial', sans-serif;
+            color: #2d3748;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .resume.creative .resume-header {
+            text-align: center;
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .resume.creative .name {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        /* Country-specific styles */
+        .resume.usa .contact-item::before {
+            content: "📞 ";
+        }
+
+        .resume.uk .contact-item::before {
+            content: "📞 +44 ";
+        }
+
+        .resume.nga .contact-item::before {
+            content: "📞 +234 ";
+        }
+
+        .resume.eu .contact-item::before {
+            content: "📞 +33 ";
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .tutorial-container {
+            margin: 15px 0;
+        }
+
+        .tutorial-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 12px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .mobile-tabs {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-tabs {
+                display: flex;
+                margin-bottom: 15px;
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: var(--card-shadow);
+            }
+            
+            .mobile-tab {
+                flex: 1;
+                text-align: center;
+                padding: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            
+            .mobile-tab.active {
+                background: var(--primary);
+                color: white;
+            }
+            
+            .tab-content {
+                display: none;
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+        }
+
+        /* Mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 900;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+        }
+        
+        /* Loading spinner for PDF generation */
+        .pdf-loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .pdf-loading.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(67, 97, 238, 0.2);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pdf-loading p {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-alt"></i> Resume & Cover Letter Generator</h1>
+            <p class="subtitle">Create professional resumes and cover letters tailored to different countries and styles</p>
+        </header>
+        
+        <div class="tutorial-container">
+            <div class="tutorial-step">
+                <div class="step-number">1</div>
+                <div>Fill in your personal and professional information</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">2</div>
+                <div>Choose your preferred style and country format</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">3</div>
+                <div>Generate your resume and cover letter</div>
+            </div>
+            <div class="tutorial-step">
+                <div class="step-number">4</div>
+                <div>Export to PDF or copy to clipboard</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="resumeCount">1,243</div>
+                <div class="stat-label">Resumes Generated</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="coverLetterCount">982</div>
+                <div class="stat-label">Cover Letters Created</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">94%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+        
+        <div class="mobile-tabs">
+            <div class="mobile-tab active" data-tab="inputs">Inputs</div>
+            <div class="mobile-tab" data-tab="resume">Resume</div>
+            <div class="mobile-tab" data-tab="letter">Cover Letter</div>
+        </div>
+        
+        <div class="app-container">
+            <div class="input-section tab-content active" id="inputs-tab">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-user-edit"></i> Your Information</h2>
+                    
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="jobTitle">Job Title *</label>
+                            <input type="text" id="jobTitle" placeholder="Software Engineer" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" placeholder="john.doe@example.com" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" id="phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="San Francisco, CA">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="yearsExperience">Years of Experience</label>
+                            <input type="number" id="yearsExperience" placeholder="5">
+                            <div class="progress-bar">
+                                <div class="progress" id="experienceProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skills">Skills (comma separated) *</label>
+                        <input type="text" id="skills" placeholder="JavaScript, React, Node.js, CSS" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="education">Education *</label>
+                        <textarea id="education" placeholder="BS in Computer Science, University of Example, 2015-2019&#10;GPA: 3.8/4.0" required></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="workExperience">Work Experience *</label>
+                        <textarea id="workExperience" placeholder="Senior Developer at Tech Corp, 2019-Present&#10;- Led team of 5 developers&#10;- Improved system performance by 40%&#10;&#10;Software Engineer at Startup Inc, 2017-2019&#10;- Developed key features using React and Node.js" required></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="careerObjective">Career Objective/Summary *</label>
+                        <textarea id="careerObjective" placeholder="Seeking a challenging role where I can utilize my skills and experience to contribute to company success." required></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="companyName">Target Company (for cover letter)</label>
+                        <input type="text" id="companyName" placeholder="Acme Inc.">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="hiringManager">Hiring Manager Name</label>
+                        <input type="text" id="hiringManager" placeholder="Sarah Johnson">
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button id="generateResume" class="btn btn-primary"><i class="fas fa-file-alt"></i> Generate Resume</button>
+                        <button id="generateCoverLetter" class="btn btn-primary"><i class="fas fa-envelope"></i> Generate Cover Letter</button>
+                        <button id="clearStorage" class="btn btn-danger"><i class="fas fa-trash"></i> Clear Data</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-paint-brush"></i> Customization Options</h2>
+                    
+                    <div class="input-group">
+                        <label>Resume Style</label>
+                        <div class="style-selector">
+                            <div class="style-option active" data-style="modern">
+                                <i class="fas fa-desktop"></i>
+                                <div>Modern</div>
+                            </div>
+                            <div class="style-option" data-style="classic">
+                                <i class="fas fa-feather-alt"></i>
+                                <div>Classic</div>
+                            </div>
+                            <div class="style-option" data-style="creative">
+                                <i class="fas fa-palette"></i>
+                                <div>Creative</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Country Format</label>
+                        <div class="style-selector">
+                            <div class="style-option active" data-country="usa">
+                                <i class="fas fa-flag-usa"></i>
+                                <div>USA</div>
+                            </div>
+                            <div class="style-option" data-country="uk">
+                                <i class="fas fa-flag-uk"></i>
+                                <div>UK</div>
+                            </div>
+                            <div class="style-option" data-country="eu">
+                                <i class="fas fa-flag-eu"></i>
+                                <div>EU</div>
+                            </div>
+                            <div class="style-option" data-country="nga">
+                                <i class="fas fa-flag"></i>
+                                <div>Nigeria</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="colorPicker">Accent Color</label>
+                        <input type="color" id="colorPicker" value="#4361ee">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="card tab-content" id="resume-tab">
+                    <div class="output-header">
+                        <h2 class="card-title"><i class="fas fa-file-pdf"></i> Professional Resume</h2>
+                        <div class="btn-group">
+                            <button id="copyResume" class="btn btn-success"><i class="fas fa-copy"></i> Copy</button>
+                            <button id="pdfResume" class="btn btn-warning"><i class="fas fa-download"></i> PDF</button>
+                        </div>
+                    </div>
+                    <div id="resumeContent" class="resume-content">
+                        <div class="resume modern usa">
+                            <div class="resume-header">
+                                <h1 class="name">John Doe</h1>
+                                <p class="title">Software Engineer</p>
+                                <p class="contact">
+                                    <span class="contact-item">john.doe@example.com</span> • 
+                                    <span class="contact-item">+1 (555) 123-4567</span> • 
+                                    <span class="contact-item">San Francisco, CA</span>
+                                </p>
+                            </div>
+                            
+                            <div class="resume-section">
+                                <h3 class="resume-section-title">Professional Summary</h3>
+                                <p>Seeking a challenging role where I can utilize my skills and experience to contribute to company success.</p>
+                            </div>
+                            
+                            <div class="resume-section">
+                                <h3 class="resume-section-title">Skills</h3>
+                                <ul class="skills-list">
+                                    <li class="skill-item">JavaScript</li>
+                                    <li class="skill-item">React</li>
+                                    <li class="skill-item">Node.js</li>
+                                    <li class="skill-item">CSS</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="resume-section">
+                                <h3 class="resume-section-title">Work Experience</h3>
+                                <p>Senior Developer at Tech Corp, 2019-Present<br>
+                                - Led team of 5 developers<br>
+                                - Improved system performance by 40%</p>
+                            </div>
+                            
+                            <div class="resume-section">
+                                <h3 class="resume-section-title">Education</h3>
+                                <p>BS in Computer Science, University of Example, 2015-2019<br>
+                                GPA: 3.8/4.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card tab-content" id="letter-tab">
+                    <div class="output-header">
+                        <h2 class="card-title"><i class="fas fa-envelope-open-text"></i> Cover Letter</h2>
+                        <div class="btn-group">
+                            <button id="copyCoverLetter" class="btn btn-success"><i class="fas fa-copy"></i> Copy</button>
+                            <button id="pdfCoverLetter" class="btn btn-warning"><i class="fas fa-download"></i> PDF</button>
+                        </div>
+                    </div>
+                    <div id="coverLetterContent" class="letter-content">
+                        <p>October 20, 2023</p><br>
+                        <p>Sarah Johnson<br>
+                        Hiring Manager<br>
+                        Acme Inc.<br>
+                        123 Business Ave<br>
+                        San Francisco, CA 94107</p><br>
+                        <p>Dear Ms. Johnson,</p><br>
+                        <p>I am writing to express my interest in the Software Engineer position at Acme Inc. With 5 years of experience in the field, I have developed a strong skill set that I believe would be valuable to your team.</p><br>
+                        <p>My experience includes:</p>
+                        <p>Senior Developer at Tech Corp, 2019-Present<br>
+                        - Led team of 5 developers<br>
+                        - Improved system performance by 40%</p><br>
+                        <p>My key skills include: JavaScript, React, Node.js, CSS.</p><br>
+                        <p>I am excited about the opportunity to contribute to your team and help achieve company goals.</p><br>
+                        <p>Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experience can benefit your organization.</p><br>
+                        <p>Sincerely,<br>
+                        John Doe</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Professional Resume & Cover Letter Generator | All data is stored locally in your browser | © 2023</p>
+        </footer>
+    </div>
+    
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div id="toast" class="toast"><i class="fas fa-check-circle"></i> Copied to clipboard!</div>
+    
+    <div class="pdf-loading" id="pdfLoading">
+        <div class="spinner"></div>
+        <p>Generating PDF, please wait...</p>
+    </div>
+
+    <script>
+        // DOM Elements
+        const fullNameInput = document.getElementById('fullName');
+        const jobTitleInput = document.getElementById('jobTitle');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const locationInput = document.getElementById('location');
+        const yearsExperienceInput = document.getElementById('yearsExperience');
+        const skillsInput = document.getElementById('skills');
+        const educationInput = document.getElementById('education');
+        const workExperienceInput = document.getElementById('workExperience');
+        const careerObjectiveInput = document.getElementById('careerObjective');
+        const companyNameInput = document.getElementById('companyName');
+        const hiringManagerInput = document.getElementById('hiringManager');
+        const colorPicker = document.getElementById('colorPicker');
+        const experienceProgress = document.getElementById('experienceProgress');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileTabs = document.querySelectorAll('.mobile-tab');
+        const pdfLoading = document.getElementById('pdfLoading');
+        
+        const generateResumeBtn = document.getElementById('generateResume');
+        const generateCoverLetterBtn = document.getElementById('generateCoverLetter');
+        const clearStorageBtn = document.getElementById('clearStorage');
+        const copyResumeBtn = document.getElementById('copyResume');
+        const copyCoverLetterBtn = document.getElementById('copyCoverLetter');
+        const pdfResumeBtn = document.getElementById('pdfResume');
+        const pdfCoverLetterBtn = document.getElementById('pdfCoverLetter');
+        
+        const resumeContent = document.getElementById('resumeContent');
+        const coverLetterContent = document.getElementById('coverLetterContent');
+        const toast = document.getElementById('toast');
+        
+        const styleOptions = document.querySelectorAll('.style-option[data-style]');
+        const countryOptions = document.querySelectorAll('.style-option[data-country]');
+        
+        // Current settings
+        let currentStyle = 'modern';
+        let currentCountry = 'usa';
+        
+        // Initialize
+        loadSavedData();
+        setEventListeners();
+        updateStats();
+        setupMobileNavigation();
+        
+        // Set up mobile navigation
+        function setupMobileNavigation() {
+            // Mobile tabs functionality
+            mobileTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    mobileTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    if (tabName === 'inputs') {
+                        document.getElementById('inputs-tab').classList.add('active');
+                    } else {
+                        document.getElementById(`${tabName}-tab`).classList.add('active');
+                    }
+                    
+                    // Hide mobile menu after selection
+                    document.querySelector('.mobile-tabs').style.display = 'none';
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                });
+            });
+            
+            // Mobile menu button functionality
+            mobileMenuBtn.addEventListener('click', () => {
+                const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+                
+                if (isExpanded) {
+                    // Hide menu
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                    document.querySelector('.mobile-tabs').style.display = 'none';
+                } else {
+                    // Show menu
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+                    document.querySelector('.mobile-tabs').style.display = 'flex';
+                }
+            });
+        }
+        
+        // Set up event listeners
+        function setEventListeners() {
+            generateResumeBtn.addEventListener('click', generateResume);
+            generateCoverLetterBtn.addEventListener('click', generateCoverLetter);
+            clearStorageBtn.addEventListener('click', clearStorage);
+            
+            copyResumeBtn.addEventListener('click', () => copyToClipboard(resumeContent));
+            copyCoverLetterBtn.addEventListener('click', () => copyToClipboard(coverLetterContent));
+            
+            pdfResumeBtn.addEventListener('click', () => generatePDF(resumeContent, 'resume'));
+            pdfCoverLetterBtn.addEventListener('click', () => generatePDF(coverLetterContent, 'cover-letter'));
+            
+            // Style selection
+            styleOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    styleOptions.forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    currentStyle = option.getAttribute('data-style');
+                    generateResume();
+                });
+            });
+            
+            // Country selection
+            countryOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    countryOptions.forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    currentCountry = option.getAttribute('data-country');
+                    generateResume();
+                    generateCoverLetter();
+                });
+            });
+            
+            // Color picker
+            colorPicker.addEventListener('input', updateAccentColor);
+            
+            // Experience progress
+            yearsExperienceInput.addEventListener('input', updateExperienceProgress);
+            
+            // Save data on input
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', saveData);
+            });
+        }
+        
+        // Update experience progress
+        function updateExperienceProgress() {
+            const years = parseInt(yearsExperienceInput.value) || 0;
+            const width = Math.min(100, years * 10);
+            experienceProgress.style.width = `${width}%`;
+        }
+        
+        // Update stats
+        function updateStats() {
+            // Simulate increasing numbers
+            setInterval(() => {
+                const resumeCount = document.getElementById('resumeCount');
+                const coverLetterCount = document.getElementById('coverLetterCount');
+                
+                let currentResumeCount = parseInt(resumeCount.textContent.replace(/,/g, ''));
+                let currentCoverCount = parseInt(coverLetterCount.textContent.replace(/,/g, ''));
+                
+                resumeCount.textContent = (currentResumeCount + 1).toLocaleString();
+                coverLetterCount.textContent = (currentCoverCount + 1).toLocaleString();
+            }, 5000);
+        }
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            if (localStorage.getItem('resumeData')) {
+                const data = JSON.parse(localStorage.getItem('resumeData'));
+                
+                fullNameInput.value = data.fullName || '';
+                jobTitleInput.value = data.jobTitle || '';
+                emailInput.value = data.email || '';
+                phoneInput.value = data.phone || '';
+                locationInput.value = data.location || '';
+                yearsExperienceInput.value = data.yearsExperience || '';
+                skillsInput.value = data.skills || '';
+                educationInput.value = data.education || '';
+                workExperienceInput.value = data.workExperience || '';
+                careerObjectiveInput.value = data.careerObjective || '';
+                companyNameInput.value = data.companyName || '';
+                hiringManagerInput.value = data.hiringManager || '';
+                
+                if (data.currentStyle) {
+                    currentStyle = data.currentStyle;
+                    document.querySelector(`.style-option[data-style="${currentStyle}"]`).classList.add('active');
+                }
+                
+                if (data.currentCountry) {
+                    currentCountry = data.currentCountry;
+                    document.querySelector(`.style-option[data-country="${currentCountry}"]`).classList.add('active');
+                }
+                
+                if (data.accentColor) {
+                    colorPicker.value = data.accentColor;
+                    updateAccentColor();
+                }
+                
+                updateExperienceProgress();
+                
+                // Generate resume with saved data
+                generateResume();
+                generateCoverLetter();
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                fullName: fullNameInput.value,
+                jobTitle: jobTitleInput.value,
+                email: emailInput.value,
+                phone: phoneInput.value,
+                location: locationInput.value,
+                yearsExperience: yearsExperienceInput.value,
+                skills: skillsInput.value,
+                education: educationInput.value,
+                workExperience: workExperienceInput.value,
+                careerObjective: careerObjectiveInput.value,
+                companyName: companyNameInput.value,
+                hiringManager: hiringManagerInput.value,
+                currentStyle,
+                currentCountry,
+                accentColor: colorPicker.value
+            };
+            
+            localStorage.setItem('resumeData', JSON.stringify(data));
+        }
+        
+        // Update accent color
+        function updateAccentColor() {
+            document.documentElement.style.setProperty('--primary', colorPicker.value);
+            document.documentElement.style.setProperty('--secondary', adjustColor(colorPicker.value, -20));
+            saveData();
+        }
+        
+        // Helper function to adjust color
+        function adjustColor(color, amount) {
+            return '#' + color.replace(/^#/, '').replace(/../g, color => ('0'+Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Generate Resume
+        function generateResume() {
+            if (!fullNameInput.value) {
+                showToast('Please enter your name');
+                return;
+            }
+            
+            const skills = skillsInput.value.split(',').map(skill => skill.trim());
+            
+            resumeContent.innerHTML = `
+                <div class="resume ${currentStyle} ${currentCountry}">
+                    <div class="resume-header">
+                        <h1 class="name">${fullNameInput.value}</h1>
+                        <p class="title">${jobTitleInput.value} ${yearsExperienceInput.value ? '| ' + yearsExperienceInput.value + ' years of experience' : ''}</p>
+                        <p class="contact">
+                            ${emailInput.value ? `<span class="contact-item">${emailInput.value}</span> • ` : ''}
+                            ${phoneInput.value ? `<span class="contact-item">${phoneInput.value}</span> • ` : ''}
+                            ${locationInput.value ? `<span class="contact-item">${locationInput.value}</span>` : ''}
+                        </p>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3 class="resume-section-title">Professional Summary</h3>
+                        <p>${careerObjectiveInput.value || 'Not specified'}</p>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3 class="resume-section-title">Skills</h3>
+                        <ul class="skills-list">
+                            ${skills.map(skill => `<li class="skill-item">${skill}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3 class="resume-section-title">Work Experience</h3>
+                        <p>${workExperienceInput.value.replace(/\n/g, '<br>') || 'Not specified'}</p>
+                    </div>
+                    
+                    <div class="resume-section">
+                        <h3 class="resume-section-title">Education</h3>
+                        <p>${educationInput.value.replace(/\n/g, '<br>') || 'Not specified'}</p>
+                    </div>
+                </div>
+            `;
+            
+            saveData();
+            showToast('Resume generated successfully!');
+        }
+        
+        // Generate Cover Letter
+        function generateCoverLetter() {
+            if (!fullNameInput.value) {
+                showToast('Please enter your name');
+                return;
+            }
+            
+            const today = new Date();
+            const date = today.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const hiringManager = hiringManagerInput.value ? hiringManagerInput.value : 'Hiring Manager';
+            const companyName = companyNameInput.value ? companyNameInput.value : 'Company';
+            
+            coverLetterContent.innerHTML = `
+                <p>${date}</p><br>
+                <p>${hiringManager}<br>
+                Hiring Manager<br>
+                ${companyName}<br>
+                ${locationInput.value || 'Address'}</p><br>
+                <p>Dear ${getSalutation(hiringManager)},</p><br>
+                <p>I am writing to express my interest in the ${jobTitleInput.value || 'position'} at ${companyName}. With ${yearsExperienceInput.value || 'several'} years of experience in the field, I have developed a strong skill set that I believe would be valuable to your team.</p><br>
+                <p>My experience includes:</p>
+                <p>${workExperienceInput.value.replace(/\n/g, '<br>') || 'Not specified'}</p><br>
+                <p>My key skills include: ${skillsInput.value || 'Not specified'}.</p><br>
+                <p>${careerObjectiveInput.value || 'I am excited about the opportunity to contribute to your team and help achieve company goals.'}</p><br>
+                <p>Thank you for considering my application. I look forward to the opportunity to discuss how my skills and experience can benefit your organization.</p><br>
+                <p>Sincerely,<br>
+                ${fullNameInput.value}</p>
+            `;
+            
+            saveData();
+            showToast('Cover letter generated successfully!');
+        }
+        
+        // Get appropriate salutation based on hiring manager name
+        function getSalutation(name) {
+            if (!name || name === 'Hiring Manager') return 'Hiring Manager';
+            
+            // If it's likely a first and last name
+            if (name.includes(' ')) {
+                return 'Mr./Ms. ' + name.split(' ')[1];
+            }
+            
+            return name;
+        }
+        
+        // Copy to Clipboard
+        function copyToClipboard(element) {
+            const text = element.innerText;
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    showToast('Copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    showToast('Failed to copy to clipboard');
+                });
+        }
+        
+        // Generate PDF
+        function generatePDF(element, filename) {
+            // Show loading indicator
+            pdfLoading.classList.add('active');
+            
+            // Use setTimeout to allow the UI to update before starting the PDF generation
+            setTimeout(() => {
+                // Create a clone of the element to avoid modifying the original
+                const clonedElement = element.cloneNode(true);
+                
+                // Remove any buttons or actions from the clone
+                clonedElement.querySelectorAll('button').forEach(button => button.remove());
+                
+                // Add specific PDF styling
+                clonedElement.style.padding = '20px';
+                clonedElement.style.width = '210mm'; // A4 width
+                clonedElement.style.background = 'white';
+                
+                document.body.appendChild(clonedElement);
+                
+                html2canvas(clonedElement, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+                    
+                    const imgWidth = 210; // A4 width in mm
+                    const pageHeight = 297; // A4 height in mm
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    
+                    // Add more pages if needed
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    
+                    pdf.save(`${filename}-${new Date().getTime()}.pdf`);
+                    document.body.removeChild(clonedElement);
+                    
+                    // Hide loading indicator
+                    pdfLoading.classList.remove('active');
+                    
+                    showToast('PDF generated successfully!');
+                }).catch(error => {
+                    console.error('Error generating PDF:', error);
+                    pdfLoading.classList.remove('active');
+                    showToast('Error generating PDF. Please try again.');
+                });
+            }, 500);
+        }
+        
+        // Clear localStorage
+        function clearStorage() {
+            localStorage.removeItem('resumeData');
+            
+            fullNameInput.value = '';
+            jobTitleInput.value = '';
+            emailInput.value = '';
+            phoneInput.value = '';
+            locationInput.value = '';
+            yearsExperienceInput.value = '';
+            skillsInput.value = '';
+            educationInput.value = '';
+            workExperienceInput.value = '';
+            careerObjectiveInput.value = '';
+            companyNameInput.value = '';
+            hiringManagerInput.value = '';
+            
+            resumeContent.innerHTML = '<p>Your resume will appear here after you click "Generate Resume".</p>';
+            coverLetterContent.innerHTML = '<p>Your cover letter will appear here after you click "Generate Cover Letter".</p>';
+            
+            // Reset to default style and country
+            styleOptions.forEach(option => option.classList.remove('active'));
+            document.querySelector('.style-option[data-style="modern"]').classList.add('active');
+            currentStyle = 'modern';
+            
+            countryOptions.forEach(option => option.classList.remove('active'));
+            document.querySelector('.style-option[data-country="usa"]').classList.add('active');
+            currentCountry = 'usa';
+            
+            colorPicker.value = '#4361ee';
+            updateAccentColor();
+            updateExperienceProgress();
+            
+            showToast('All data cleared!');
+        }
+    </script>
+</body>
+</html>
